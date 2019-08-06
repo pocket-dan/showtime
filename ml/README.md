@@ -3,7 +3,9 @@ ML
 
 ## Requirements
 
-- `nvidia-docker`
+- make
+- [nvidia-driver](https://www.nvidia.com/object/unix.html)
+- [nvidia-docker](https://github.com/NVIDIA/nvidia-docker)
 
 ## Getting Started
 

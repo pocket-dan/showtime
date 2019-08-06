@@ -5,8 +5,9 @@ build:
 
 start:
 	docker run \
+		-d \
 		--gpus all \
-		-p "5000:5000" \
+		-p "80:5000" \
 		-v "${CWD}Makefile:/home/user/pose-estimation/Makefile" \
 		-v "${CWD}server.py:/home/user/pose-estimation/server.py" \
 		-v "${CWD}estimate_pose.py:/home/user/pose-estimation/estimate_pose.py" \
@@ -16,7 +17,7 @@ start:
 enter:
 	docker run \
 		--gpus all \
-		-p "5000:5000" \
+		-p "80:5000" \
 		-v "${CWD}Makefile:/home/user/pose-estimation/Makefile" \
 		-v "${CWD}server.py:/home/user/pose-estimation/server.py" \
 		-v "${CWD}estimate_pose.py:/home/user/pose-estimation/estimate_pose.py" \

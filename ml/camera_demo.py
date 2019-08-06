@@ -76,6 +76,9 @@ def main():
         # read camera image
         _, image = cap.read()
 
+        height, width, _ = image.shape
+        image = cv2.resize(image, (width // 2, height // 2))
+
         # get pose result from ml server
         try:
             result = post_image_to_server(image)
