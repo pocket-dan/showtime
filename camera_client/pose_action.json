@@ -1,0 +1,67 @@
+{
+  "data": [
+    {
+      "actionType": "slide",
+      "id": 2,
+      "image": "/_nuxt/assets/images/actions/move-prev.png",
+      "name": "move-prev",
+      "poseId": 4
+    },
+    {
+      "actionType": "slide",
+      "id": 1,
+      "image": "/_nuxt/assets/images/actions/move-next.png",
+      "name": "move-next",
+      "poseId": 5
+    },
+    {
+      "actionType": "sound",
+      "id": 5,
+      "image": "/_nuxt/assets/images/actions/gaan.png",
+      "name": "shock",
+      "poseId": 1
+    },
+    {
+      "actionType": "sound",
+      "id": 3,
+      "image": "/_nuxt/assets/images/actions/yeah.png",
+      "name": "yeah",
+      "poseId": 2
+    },
+    {
+      "actionType": "sound",
+      "id": 4,
+      "image": "/_nuxt/assets/images/actions/patipati.png",
+      "name": "patipati",
+      "poseId": 3
+    },
+    {
+      "actionType": "sound",
+      "id": 9,
+      "image": "/_nuxt/assets/images/actions/shakin.png",
+      "name": "hakin",
+      "poseId": 6
+    },
+    {
+      "actionType": "sound",
+      "id": 6,
+      "image": "/_nuxt/assets/images/actions/yaru.png",
+      "name": "yaru",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 7,
+      "image": "/_nuxt/assets/images/actions/www.png",
+      "name": "www",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 8,
+      "image": "/_nuxt/assets/images/actions/gua.png",
+      "name": "gua",
+      "poseId": 7
+    }
+  ]
+}
