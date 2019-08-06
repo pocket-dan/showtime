@@ -1,0 +1,15 @@
+# python
+.mypy_cache
+.python-version
+__pycache__
+_models
+*.pyc
+
+# dataset
+classifier/dataset/
+classifier/results/
+
+# unnecessary dirs
+openpose
+pose-estimation
+deploy.sh

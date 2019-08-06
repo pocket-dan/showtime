@@ -1,0 +1,12 @@
+*
+!Dockerfile
+!requirements.txt
+!server.py
+!estimate_pose.py
+!classify_pose.py
+
+!classifier
+classifier/*
+!classifier/model.py
+!classifier/model.pth
+!classifier/requirements.txt

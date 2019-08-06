@@ -1,0 +1,4 @@
+numpy
+Flask
+assertpy
+Flask-API
