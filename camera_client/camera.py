@@ -2,10 +2,9 @@ import cv2
 import json
 import urllib.parse
 import urllib.request
-from mutagen.mp3 import MP3 as mp3
-import pygame
-import time
 import osascript
+import os
+import subprocess
 
 relationPose = {
     "hands-on-head": 1,
@@ -16,19 +15,24 @@ relationPose = {
     "ultraman": 6
 }
 
+URL = os.environ.get("ML_URL") + "/infer"
+
 class PoseCaptureCamera:
     def post_frame():
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
 
         # flag = 0
         while True:
             _, frame = cap.read()
-            _, jpgbytes = cv2.imencode(".jpg", frame)
+            height, width, _ = frame.shape
+            image = cv2.resize(frame, (width // 2, height // 2))
+            _, jpgbytes = cv2.imencode(".jpg", image)
             reqbody = jpgbytes.tobytes()
 
-            url = "https://raahii2.serveo.net/infer"
+            # url = "https://raahii2.serveo.net/infer"
+
             req = urllib.request.Request(
-                url,
+                URL,
                 reqbody,
                 method="POST",
                 headers={"Content-Type": "application/octet-stream"},
@@ -75,13 +79,9 @@ def exec_apple_script(action):
             ''')
 
 def play_music(filename):
-    pygame.mixer.init()
     filename = './sounds/' + filename
-    pygame.mixer.music.load(filename) #音源を読み込み
-    mp3_length = mp3(filename).info.length #音源の長さ取得
-    pygame.mixer.music.play(1) #再生開始。1の部分を変えるとn回再生(その場合は次の行の秒数も×nすること)
-    time.sleep(mp3_length + 0.25) #再生開始後、音源の長さだけ待つ(0.25待つのは誤差解消)
-    pygame.mixer.music.stop() #音源の長さ待ったら再生停止
+    cmd = ["afplay", filename]
+    subprocess.call(cmd, shell=False)
 
 def load_relation_pose_action():
     f = open('pose_action.json')
