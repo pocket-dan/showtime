@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--camera", type=int, default=0)
 parser.add_argument("--endpoint", default="http://localhost:5000")
 parser.add_argument("--pose-config", default="pose_action.json")
-parser.add_argument("--save-video", default=None)
+parser.add_argument("--output", default=None)
 args = parser.parse_args()
 
 
@@ -27,7 +27,7 @@ relationPose = {
 }
 
 action_interval = 1.0  # sec
-recognition_count = 4  # sec
+recognition_count = 2
 
 
 def draw_body_parts(image, parts):
@@ -167,8 +167,16 @@ def main():
     if cap.isOpened() is False:
         print("Error opening video stream or file")
 
+    # record video if args.output is not None
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
+    fps = 4
+    fourcc = cv2.VideoWriter_fourcc(*"DIVX")
+    writer = cv2.VideoWriter(args.output, fourcc, fps, (width, height))
+    print(f"writer: {args.output}, fps: {fps}, size: ({height},{width})")
+
     count = 0  # continuous detection times
-    stop_execution = False
+    stop_execution, stop_execution_start = False, None
     pose_prev = None
     while cap.isOpened():
         start_time = time.time()  # to calculate fps
@@ -205,6 +213,9 @@ def main():
         if cv2.waitKey(1) == 27:
             break
 
+        if args.output is not None:
+            writer.write(image)
+
         if stop_execution:
             if (time.time() - stop_execution_start) > action_interval:
                 stop_execution = False
@@ -229,6 +240,7 @@ def main():
             relation = find(pose_action, None, lambda x: x["poseId"] == pose_id)
             execute_action(relation["actionType"], relation["name"])
 
+    writer.release()
     cap.release()
     cv2.destroyAllWindows()
 
