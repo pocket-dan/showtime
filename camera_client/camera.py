@@ -168,12 +168,13 @@ def main():
         print("Error opening video stream or file")
 
     # record video if args.output is not None
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
-    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
-    fps = 4
-    fourcc = cv2.VideoWriter_fourcc(*"DIVX")
-    writer = cv2.VideoWriter(args.output, fourcc, fps, (width, height))
-    print(f"writer: {args.output}, fps: {fps}, size: ({height},{width})")
+    if args.output is not None:
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
+        fps = 4
+        fourcc = cv2.VideoWriter_fourcc(*"DIVX")
+        writer = cv2.VideoWriter(args.output, fourcc, fps, (width, height))
+        print(f"writer: {args.output}, fps: {fps}, size: ({height},{width})")
 
     count = 0  # continuous detection times
     stop_execution, stop_execution_start = False, None
@@ -194,6 +195,10 @@ def main():
             continue
         pose = result["pose_class"]
 
+        pose_print = pose
+        if "missing" in pose:
+            pose_print = " - "
+
         # draw detected body parts
         parts, face_bbox = result["parts"], result["face_bbox"]
         image = draw_body_parts(image, parts)
@@ -202,7 +207,7 @@ def main():
         fps = 1.0 / (time.time() - start_time)
         cv2.putText(
             image,
-            f"class: {pose} fps: {fps:.2f}",
+            f"class: {pose_print:^13} fps: {fps:.2f}",
             (20, 45),
             cv2.FONT_HERSHEY_SIMPLEX,
             1.2,
