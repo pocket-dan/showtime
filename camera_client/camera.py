@@ -35,6 +35,13 @@ def draw_body_parts(image, parts):
         ["rshoulder", "relbow"],
         ["relbow", "rwrist"],
         ["lelbow", "lwrist"],
+        ["neck", "nose"],
+        # ["nose", "reye"],
+        # ["nose", "leye"],
+        # ["leye", "lear"],
+        # ["reye", "rear"],
+        ["neck", "rhip"],
+        ["neck", "lhip"],
     ]
     colors = [
         [255, 0, 0],
@@ -43,13 +50,19 @@ def draw_body_parts(image, parts):
         [255, 255, 0],
         [170, 255, 0],
         [85, 255, 0],
-        # [0, 255, 0], [0, 255, 85], [0, 255, 170], [0, 255, 255],
-        # [0, 170, 255], [0, 85, 255], [0, 0, 255], [85, 0, 255],
+        [0, 255, 0],
+        # [0, 255, 85],
+        # [0, 255, 170],
+        # [0, 255, 255],
+        # [0, 170, 255],
+        [0, 85, 255],
+        [0, 0, 255],
+        # [85, 0, 255],
         # [170, 0, 255], [255, 0, 255], [255, 0, 170], [255, 0, 85]
     ]
     score_threshold = 0.25
 
-    height, width, channel = image.shape
+    height, width, _ = image.shape
 
     for pair, color in zip(connections, colors):
         if pair[0] not in parts or pair[1] not in parts:
@@ -61,6 +74,23 @@ def draw_body_parts(image, parts):
         p1 = (int(width * part1["x"]), int(height * part1["y"]))
         p2 = (int(width * part2["x"]), int(height * part2["y"]))
         cv2.line(image, p1, p2, color, 3)
+
+    return image
+
+
+def draw_face_bbox(image, bbox):
+    if bbox is None:
+        return image
+
+    height, width, _ = image.shape
+    w, h = bbox["w"], bbox["h"]
+    tx, ty = bbox["x"] - w // 2, bbox["y"] - h // 2
+
+    color = [0, 255, 0]
+    cv2.line(image, (tx, ty), (tx + w, ty), color, 3)
+    cv2.line(image, (tx + w, ty), (tx + w, ty + h), color, 3)
+    cv2.line(image, (tx + w, ty + h), (tx, ty + h), color, 3)
+    cv2.line(image, (tx, ty + h), (tx, ty), color, 3)
 
     return image
 
