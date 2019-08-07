@@ -78,7 +78,7 @@ def post_image_to_server(image):
     return res.json()
 
 
-def exec_apple_script(action):
+def operate_powerpoint(action):
     if action == "move-next":
         osascript.run(
             """
@@ -115,17 +115,20 @@ def find(iterable, default=False, pred=None):
 
 def execute_action(_type, action):
     if _type == "slide":
-        exec_apple_script(action)
+        operate_powerpoint(action)
     elif _type == "sound":
         filename = action + ".mp3"
         play_music(filename)
 
 
-def main():
+def load_config():
     # load pose to action relation config
     f = open(args.pose_config)
     pose_action = json.load(f)["data"]
+    return pose_action
 
+
+def main():
     cap = cv2.VideoCapture(args.camera)
     if cap.isOpened() is False:
         print("Error opening video stream or file")
@@ -164,8 +167,9 @@ def main():
 
         if "missing_body_part" not in pose and pose != "others":
             # execute action corresponding detected pose
-            relation = find(pose_action, pred=lambda x: x["poseId"])
-            print(relation)
+            pose_action = load_config()
+            pose_id = relationPose[pose]
+            relation = find(pose_action, None, lambda x: x["poseId"] == pose_id)
             execute_action(relation["actionType"], relation["name"])
 
         if cv2.waitKey(1) == 27:
