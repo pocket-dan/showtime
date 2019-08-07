@@ -26,6 +26,9 @@ relationPose = {
     "ultraman": 6,
 }
 
+action_interval = 1.0  # sec
+recognition_count = 4  # sec
+
 
 def draw_body_parts(image, parts):
     connections = [
@@ -136,7 +139,8 @@ def operate_powerpoint(action):
 def play_music(filename):
     filename = "./sounds/" + filename
     cmd = ["afplay", filename]
-    subprocess.call(cmd, shell=False)
+    # non-blocking supbrocesss call
+    subprocess.Popen(cmd)
 
 
 def find(iterable, default=False, pred=None):
@@ -163,6 +167,9 @@ def main():
     if cap.isOpened() is False:
         print("Error opening video stream or file")
 
+    count = 0  # continuous detection times
+    stop_execution = False
+    pose_prev = None
     while cap.isOpened():
         start_time = time.time()  # to calculate fps
 
@@ -180,8 +187,9 @@ def main():
         pose = result["pose_class"]
 
         # draw detected body parts
-        parts = result["parts"]
+        parts, face_bbox = result["parts"], result["face_bbox"]
         image = draw_body_parts(image, parts)
+        image = draw_face_bbox(image, face_bbox)
 
         fps = 1.0 / (time.time() - start_time)
         cv2.putText(
@@ -194,16 +202,32 @@ def main():
             2,
         )
         cv2.imshow("pose result", image)
+        if cv2.waitKey(1) == 27:
+            break
 
-        if "missing_body_part" not in pose and pose != "others":
+        if stop_execution:
+            if (time.time() - stop_execution_start) > action_interval:
+                stop_execution = False
+            continue
+
+        if "missing_body_part" in pose or pose == "others":
+            continue
+
+        if pose == pose_prev:
+            count += 1
+        else:
+            count = 0
+            pose_prev = pose
+
+        if count >= recognition_count:
+            count = 0
+            stop_execution, stop_execution_start = True, time.time()
+
             # execute action corresponding detected pose
             pose_action = load_config()
             pose_id = relationPose[pose]
             relation = find(pose_action, None, lambda x: x["poseId"] == pose_id)
             execute_action(relation["actionType"], relation["name"])
-
-        if cv2.waitKey(1) == 27:
-            break
 
     cap.release()
     cv2.destroyAllWindows()

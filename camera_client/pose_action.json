@@ -39,7 +39,7 @@
       "actionType": "sound",
       "id": 9,
       "image": "/_nuxt/assets/images/actions/shakin.png",
-      "name": "hakin",
+      "name": "shakin",
       "poseId": 6
     },
     {
