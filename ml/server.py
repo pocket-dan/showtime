@@ -26,7 +26,7 @@ def infer():
     # estimate pose
     detected_humans = _estimate_pose(img)
     if len(detected_humans) == 0:
-        jsonify({})
+        return jsonify({})
 
     human_max_score = max(detected_humans, key=lambda h: h.score)
 

@@ -1,10 +1,21 @@
-import cv2
+import argparse
 import json
-import urllib.parse
-import urllib.request
-import osascript
 import os
 import subprocess
+import time
+from urllib.parse import urljoin
+
+import cv2
+import osascript
+import requests
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--camera", type=int, default=0)
+parser.add_argument("--endpoint", default="http://localhost:5000")
+parser.add_argument("--pose-config", default="pose_action.json")
+parser.add_argument("--save-video", default=None)
+args = parser.parse_args()
+
 
 relationPose = {
     "hands-on-head": 1,
@@ -12,122 +23,157 @@ relationPose = {
     "cheer-up": 3,
     "go-next": 4,
     "go-back": 5,
-    "ultraman": 6
+    "ultraman": 6,
 }
 
-URL = os.environ.get("ML_URL") + "/infer"
 
-class PoseCaptureCamera:
-    def post_frame():
-        cap = cv2.VideoCapture(0)
+def draw_body_parts(image, parts):
+    connections = [
+        ["neck", "lshoulder"],
+        ["neck", "rshoulder"],
+        ["lshoulder", "lelbow"],
+        ["rshoulder", "relbow"],
+        ["relbow", "rwrist"],
+        ["lelbow", "lwrist"],
+    ]
+    colors = [
+        [255, 0, 0],
+        [255, 85, 0],
+        [255, 170, 0],
+        [255, 255, 0],
+        [170, 255, 0],
+        [85, 255, 0],
+        # [0, 255, 0], [0, 255, 85], [0, 255, 170], [0, 255, 255],
+        # [0, 170, 255], [0, 85, 255], [0, 0, 255], [85, 0, 255],
+        # [170, 0, 255], [255, 0, 255], [255, 0, 170], [255, 0, 85]
+    ]
+    score_threshold = 0.25
 
-        # flag = 0
-        while True:
-            _, frame = cap.read()
-            height, width, _ = frame.shape
-            image = cv2.resize(frame, (width // 2, height // 2))
-            _, jpgbytes = cv2.imencode(".jpg", image)
-            reqbody = jpgbytes.tobytes()
+    height, width, channel = image.shape
 
-            # url = "https://raahii2.serveo.net/infer"
+    for pair, color in zip(connections, colors):
+        if pair[0] not in parts or pair[1] not in parts:
+            continue
+        part1, part2 = parts[pair[0]], parts[pair[1]]
+        if part1["score"] <= score_threshold or part2["score"] <= score_threshold:
+            continue
 
-            req = urllib.request.Request(
-                URL,
-                reqbody,
-                method="POST",
-                headers={"Content-Type": "application/octet-stream"},
-            )
-            with urllib.request.urlopen(req) as res:
-                pose = json.loads(res.read())
-                cv2.putText(frame, pose["pose_class"], (20,50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0,0,200), 2, cv2.LINE_AA)
-                cv2.imshow('Raw Frame', frame)
-                pose_class = pose["pose_class"]
-                if "missing_body_part" in pose_class or "others" == pose_class:
-                    flag = 0
-                else:
-                    flag = 0
-                    print(pose_class)
-                    type, action = identify_action(pose_class)
-                    execute_action(type, action)
+        p1 = (int(width * part1["x"]), int(height * part1["y"]))
+        p2 = (int(width * part2["x"]), int(height * part2["y"]))
+        cv2.line(image, p1, p2, color, 3)
 
-            k = cv2.waitKey(1) # （ESC）キーで終了
-            if k == 27 or flag == 1:
-                break
+    return image
 
-        cap.release()
-        cv2.destroyAllWindows()
+
+def post_image_to_server(image):
+    # convert image data to jpeg binaries
+    _, jpegbytes = cv2.imencode(".jpg", image)
+    reqbody = jpegbytes.tobytes()
+
+    # send the request
+    headers = {"content-type": "application/octet-stream"}
+    url = urljoin(args.endpoint, "infer")
+    res = requests.post(url, data=reqbody, headers=headers)
+
+    return res.json()
 
 
 def exec_apple_script(action):
     if action == "move-next":
-        osascript.run('''
+        osascript.run(
+            """
             tell application "Microsoft PowerPoint"
                 activate
                 tell application "System Events"
                     keystroke (ASCII character 29)
                 end tell
             end tell
-            ''')
+            """
+        )
     elif action == "move-prev":
-        osascript.run('''
+        osascript.run(
+            """
             tell application "Microsoft PowerPoint"
                 activate
                 tell application "System Events"
                     keystroke (ASCII character 28)
                 end tell
             end tell
-            ''')
+            """
+        )
+
 
 def play_music(filename):
-    filename = './sounds/' + filename
+    filename = "./sounds/" + filename
     cmd = ["afplay", filename]
     subprocess.call(cmd, shell=False)
 
-def load_relation_pose_action():
-    f = open('pose_action.json')
-    pose_action = json.load(f)
-    return pose_action["data"]
 
-def identify_action(pose_class):
-    pose_action = load_relation_pose_action()
-    if pose_class == "hands-on-head":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    elif pose_class == "victory":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    elif pose_class == "cheer-up":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    elif pose_class == "go-next":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    elif pose_class == "go-back":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    elif pose_class == "ultraman":
-        for relation in pose_action:
-            if relation["poseId"] == relationPose[pose_class]:
-                action = relation["name"]
-                type = relation["actionType"]
-    return type, action
+def find(iterable, default=False, pred=None):
+    return next(filter(pred, iterable), default)
 
-def execute_action(type, action):
-    if type == "slide":
+
+def execute_action(_type, action):
+    if _type == "slide":
         exec_apple_script(action)
-    elif type == "sound":
+    elif _type == "sound":
         filename = action + ".mp3"
         play_music(filename)
 
-p = PoseCaptureCamera
-p.post_frame()
+
+def main():
+    # load pose to action relation config
+    f = open(args.pose_config)
+    pose_action = json.load(f)["data"]
+
+    cap = cv2.VideoCapture(args.camera)
+    if cap.isOpened() is False:
+        print("Error opening video stream or file")
+
+    while cap.isOpened():
+        start_time = time.time()  # to calculate fps
+
+        # read camera image
+        _, image = cap.read()
+
+        # perform pose classification with half size image
+        height, width, _ = image.shape
+        image = cv2.resize(image, (width // 2, height // 2))
+        result = post_image_to_server(image)
+
+        # when no human detected
+        if "pose_class" not in result:
+            continue
+        pose = result["pose_class"]
+
+        # draw detected body parts
+        parts = result["parts"]
+        image = draw_body_parts(image, parts)
+
+        fps = 1.0 / (time.time() - start_time)
+        cv2.putText(
+            image,
+            f"class: {pose} fps: {fps:.2f}",
+            (20, 45),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.2,
+            (0, 255, 0),
+            2,
+        )
+        cv2.imshow("pose result", image)
+
+        if "missing_body_part" not in pose and pose != "others":
+            # execute action corresponding detected pose
+            relation = find(pose_action, pred=lambda x: x["poseId"])
+            print(relation)
+            execute_action(relation["actionType"], relation["name"])
+
+        if cv2.waitKey(1) == 27:
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
