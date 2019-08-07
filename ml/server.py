@@ -3,10 +3,10 @@ from typing import Dict
 import cv2
 import numpy as np
 from flask import Flask, jsonify, request
+from flask_api import status
 
 from classify_pose import main as _classify_pose
 from estimate_pose import main as _estimate_pose
-from flask_api import status
 
 app = Flask(__name__)
 
@@ -25,6 +25,9 @@ def infer():
 
     # estimate pose
     detected_humans = _estimate_pose(img)
+    if len(detected_humans) == 0:
+        jsonify({})
+
     human_max_score = max(detected_humans, key=lambda h: h.score)
 
     response = {}

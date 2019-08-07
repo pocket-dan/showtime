@@ -11,6 +11,7 @@ import requests
 parser = argparse.ArgumentParser()
 parser.add_argument("--camera", type=int, default=0)
 parser.add_argument("--endpoint", default="http://localhost:5000")
+parser.add_argument("--save-video", default=None)
 args = parser.parse_args()
 
 
@@ -71,6 +72,15 @@ def main():
     if cap.isOpened() is False:
         print("Error opening video stream or file")
 
+    # prepare video writer
+    cap = cv2.VideoCapture(str(args.save_video))
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) // 2
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) // 2
+    fps = cap.get(cv2.CAP_PROP_FPS)
+
+    fourcc = cv2.VideoWriter_fourcc(*"DIVX")
+    writer = cv2.VideoWriter(str(args.save_video), fourcc, fps, (width, height))
+
     start_time = time.time()
     while cap.isOpened():
         # read camera image
@@ -108,6 +118,9 @@ def main():
         if cv2.waitKey(1) == 27:
             # stop with pressing ESC
             break
+
+        if args.save_video is not None:
+            writer.write(image)
 
 
 if __name__ == "__main__":
