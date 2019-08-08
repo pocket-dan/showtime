@@ -55,7 +55,8 @@ def main(body_parts: Dict) -> str:
     # y = model.infer(vertices)
 
     # lightbgm
-    vertices = np.asarray(_vertices)
-    y = model.predict(vertices)
+    vertices = np.asarray([_vertices])
+    probs = model.predict(vertices)
+    y = probs[0].argmax()
 
     return CLASS_NAMES[y]

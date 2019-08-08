@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 
 import numpy as np
+from sklearn.metrics import accuracy_score
 
 import utils
 from dataset import PoseDataset
@@ -131,12 +132,18 @@ def train_random_forest():
 
 def train_lightgbm():
     import lightgbm as lgb
+    from sklearn.preprocessing import PolynomialFeatures
 
     train_dataset = PoseDataset([root_dir / d for d in train_data_dirs])
     X_train, y_train = aggregate_dataset(train_dataset)
 
+    # poly = PolynomialFeatures(2, include_bias=True)
+    # poly.fit_transform(X_train)
+
     test_dataset = PoseDataset([root_dir / d for d in test_data_dirs])
     X_test, y_test = aggregate_dataset(test_dataset)
+
+    # poly.fit_transform(X_test)
 
     lgb_train = lgb.Dataset(X_train, y_train)
     lgb_eval = lgb.Dataset(X_test, y_test, reference=lgb_train)
@@ -166,7 +173,46 @@ def train_lightgbm():
         pickle.dump(model, f)
 
 
+def train_xgboost():
+    import xgboost as xgb
+    from sklearn.preprocessing import PolynomialFeatures
+
+    bst = xgb.XGBClassifier(
+        base_score=0.5,
+        colsample_bytree=1.0,
+        gamma=0,
+        learning_rate=0.1,
+        max_delta_step=0,
+        max_depth=5,
+        min_child_weight=1,
+        missing=None,
+        n_estimators=100,
+        nthread=-1,
+        objective="multi:softprob",
+        seed=0,
+        silent=True,
+        subsample=0.95,
+    )
+
+    train_dataset = PoseDataset([root_dir / d for d in train_data_dirs])
+    X_train, y_train = aggregate_dataset(train_dataset)
+
+    poly = PolynomialFeatures(2, include_bias=True)
+    poly.fit_transform(X_train)
+
+    test_dataset = PoseDataset([root_dir / d for d in test_data_dirs])
+    X_test, y_test = aggregate_dataset(test_dataset)
+
+    poly.fit_transform(X_test)
+
+    bst.fit(X_train, y_train)
+    y_pred = bst.predict(X_test)
+    acc = accuracy_score(y_test, y_pred)
+    print("xgboost acc:", acc)
+
+
 if __name__ == "__main__":
     # train_deep()
     # train_random_forest()
     train_lightgbm()
+    # train_xgboost()
