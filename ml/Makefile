@@ -8,10 +8,6 @@ start:
 		-d \
 		--name showtime \
 		-p "5000:5000" \
-		-v "${PWD}/classifier:/home/user/showtime/ml/classifier" \
-		-v "${PWD}/classify_pose.py:/home/user/showtime/ml/classify_pose.py" \
-		-v "${PWD}/estimate_pose.py:/home/user/showtime/ml/estimate_pose.py" \
-		-v "${PWD}/Makefile:/home/user/showtime/ml/Makefile" \
 		showtime-ml
 
 stop:
@@ -19,6 +15,17 @@ stop:
 
 logs:
 	docker logs -f showtime
+
+start-dev:
+	docker run \
+		-d \
+		--name showtime \
+		-p "5000:5000" \
+		-v "${PWD}/classifier:/home/user/showtime/ml/classifier" \
+		-v "${PWD}/classify_pose.py:/home/user/showtime/ml/classify_pose.py" \
+		-v "${PWD}/estimate_pose.py:/home/user/showtime/ml/estimate_pose.py" \
+		-v "${PWD}/Makefile:/home/user/showtime/ml/Makefile" \
+		showtime-ml
 
 enter:
 	docker run \

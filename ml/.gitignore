@@ -1,6 +1,7 @@
 # dataset
 classifier/dataset/
-classifier/results/
+classifier/results/*
+!classifier/results/light-gbm.pickle
 
 # unnecessary dirs
 openpose
