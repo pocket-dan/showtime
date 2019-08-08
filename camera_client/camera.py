@@ -26,8 +26,8 @@ relationPose = {
     "ultraman": 6,
 }
 
-action_interval = 1.0  # sec
-recognition_count = 2
+action_interval = 1  # sec
+recognition_count = 1
 
 
 def draw_body_parts(image, parts):

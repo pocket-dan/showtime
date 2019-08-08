@@ -1,0 +1,3 @@
+[submodule "ml/openpose"]
+	path = ml/openpose
+	url = https://github.com/ildoonet/tf-pose-estimation
