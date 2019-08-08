@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-base-ubuntu16.04
+FROM ubuntu:xenial
 
 # Install some basic utilities
 RUN apt-get update && apt-get install -y \
@@ -21,8 +21,9 @@ USER user
 # Create project directory
 ENV HOME=/home/user
 RUN chmod 777 /home/user
-RUN mkdir -p $HOME/pose-estimation
-WORKDIR $HOME/pose-estimation
+RUN cd $HOME && git clone --recursive https://github.com/pocket-dan/showtime.git
+ENV PROJECT_ROOT $HOME/showtime/ml
+WORKDIR $PROJECT_ROOT
 
 # Install python3 with pyenv
 ENV PYENV_ROOT $HOME/.pyenv
@@ -34,8 +35,7 @@ RUN pyenv install $PYTHON_VERSION
 RUN pyenv global $PYTHON_VERSION
 
 # Install dependencies for openpose
-RUN git clone https://github.com/ildoonet/tf-pose-estimation openpose
-WORKDIR openpose
+WORKDIR $PROJECT_ROOT/openpose
 RUN conda install -y opencv
 RUN pip install Cython tensorflow tensorflow-gpu
 RUN pip install -r requirements.txt
@@ -46,11 +46,12 @@ RUN cd tf_pose/pafprocess/ && \
     python3 setup.py build_ext --inplace
 
 # Start ML server
-WORKDIR $HOME/pose-estimation
-ENV PYTHONPATH "${PYTHONPATH}:openpose"
+WORKDIR $PROJECT_ROOT
+ENV PYTHONPATH "$PYTHONPATH:$PROJECT_ROOT/openpose"
 ADD requirements.txt .
 ADD server.py .
 RUN pip install -r requirements.txt
+RUN conda install -y -c conda-forge lightgbm
 
 ADD classifier classifier
 RUN pip install -r classifier/requirements.txt

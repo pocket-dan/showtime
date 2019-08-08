@@ -5,7 +5,16 @@ import lightgbm
 import numpy as np
 import torch
 
-from classifier.model import FCN
+CLASS_NAMES = [
+    "hands-on-head",
+    "victory",
+    "cheer-up",
+    "go-next",
+    "go-back",
+    "ultraman",
+    "others",
+]
+
 
 PARTS: List[str] = [
     "lwrist",
@@ -17,12 +26,14 @@ PARTS: List[str] = [
     "rwrist",
 ]
 
+# # deep model
 # model = torch.load("classifier/results/deep-model.pth", map_location="cpu")
 # params = torch.load("classifier/results/deep-params.pth", map_location="cpu")
 # model.load_state_dict(params)
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # model.to(device)
 
+# lightbgm
 f = open("classifier/results/light-gbm.pickle", mode="rb")
 model = pickle.load(f)
 f.close()
@@ -38,11 +49,13 @@ def main(body_parts: Dict) -> str:
         _vertices.append(y)
         _vertices.append(x)
 
+    # # deep model
     # vertices = torch.tensor([_vertices])
     # vertices = vertices.to(device)
-    # class_number = model.infer(vertices)
+    # y = model.infer(vertices)
 
+    # lightbgm
     vertices = np.asarray(_vertices)
-    class_number = model.predict(vertices)
+    y = model.predict(vertices)
 
-    return model.decode_class(class_number)
+    return CLASS_NAMES[y]

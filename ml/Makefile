@@ -1,25 +1,30 @@
 CWD := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 
 build:
-	docker build -t pose-estimation .
+	docker build -t showtime-ml .
 
 start:
 	docker run \
 		-d \
-		--gpus all \
-		-p "80:5000" \
-		-v "${CWD}Makefile:/home/user/pose-estimation/Makefile" \
-		-v "${CWD}server.py:/home/user/pose-estimation/server.py" \
-		-v "${CWD}estimate_pose.py:/home/user/pose-estimation/estimate_pose.py" \
-		-v "${CWD}classify_pose.py:/home/user/pose-estimation/classify_pose.py" \
-		pose-estimation
+		--name showtime \
+		-p "5000:5000" \
+		-v "${PWD}/classifier:/home/user/showtime/ml/classifier" \
+		-v "${PWD}/classify_pose.py:/home/user/showtime/ml/classify_pose.py" \
+		-v "${PWD}/estimate_pose.py:/home/user/showtime/ml/estimate_pose.py" \
+		-v "${PWD}/Makefile:/home/user/showtime/ml/Makefile" \
+		showtime-ml
+
+stop:
+	docker rm -f showtime
+
+logs:
+	docker logs -f showtime
 
 enter:
 	docker run \
-		--gpus all \
-		-p "80:5000" \
-		-v "${CWD}Makefile:/home/user/pose-estimation/Makefile" \
-		-v "${CWD}server.py:/home/user/pose-estimation/server.py" \
-		-v "${CWD}estimate_pose.py:/home/user/pose-estimation/estimate_pose.py" \
-		-v "${CWD}classify_pose.py:/home/user/pose-estimation/classify_pose.py" \
-		-it pose-estimation bash
+		-p "5000:5000" \
+		-v "${PWD}/classifier:/home/user/showtime/ml/classifier" \
+		-v "${PWD}/classify_pose.py:/home/user/showtime/ml/classify_pose.py" \
+		-v "${PWD}/estimate_pose.py:/home/user/showtime/ml/estimate_pose.py" \
+		-v "${PWD}/Makefile:/home/user/showtime/ml/Makefile" \
+		-it showtime-ml bash

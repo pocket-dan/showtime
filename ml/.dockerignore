@@ -1,12 +1,7 @@
-*
-!Dockerfile
-!requirements.txt
-!server.py
-!estimate_pose.py
-!classify_pose.py
+__pycache__
+*.pyc
+.mypy_cache
 
-!classifier
-classifier/*
-!classifier/model.py
-!classifier/model.pth
-!classifier/requirements.txt
+openpose
+pose-estimation
+classifier/dataset
