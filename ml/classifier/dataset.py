@@ -1,12 +1,11 @@
 import json
+from pathlib import Path
 from typing import Dict, List
 
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
-
-from pathib import Path
 
 
 class PoseDataset(Dataset):
@@ -74,16 +73,16 @@ class PoseDataset(Dataset):
             _vertices.append([y, x])
         vertices = np.asarray(_vertices, dtype=np.float32)
 
-        # # change parts offset randomly to make the model robust against the human position
-        # ymin, xmin = vertices.min(axis=0)
-        # ymax, xmax = vertices.max(axis=0)
-        # _yrange, _xrange = 1 - (ymax - ymin), 1 - (xmax - xmin)
-        #
-        # ry, rx = np.random.rand(), np.random.rand()
-        # vertices -= np.array([ymin, xmin])
-        # vertices += np.array([ry * _yrange, rx * _xrange])
-        # assert np.all(vertices >= 0)
-        # assert np.all(vertices <= 1)
+        # change parts offset randomly to make the model robust against the human position
+        ymin, xmin = vertices.min(axis=0)
+        ymax, xmax = vertices.max(axis=0)
+        _yrange, _xrange = 1 - (ymax - ymin), 1 - (xmax - xmin)
+
+        ry, rx = np.random.rand(), np.random.rand()
+        vertices -= np.array([ymin, xmin])
+        vertices += np.array([ry * _yrange, rx * _xrange])
+        assert np.all(vertices >= 0)
+        assert np.all(vertices <= 1)
 
         # class number
         class_number = item["class_number"]

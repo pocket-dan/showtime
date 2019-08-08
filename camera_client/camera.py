@@ -245,7 +245,9 @@ def main():
             relation = find(pose_action, None, lambda x: x["poseId"] == pose_id)
             execute_action(relation["actionType"], relation["name"])
 
-    writer.release()
+    if args.output is not None:
+        writer.release()
+
     cap.release()
     cv2.destroyAllWindows()
 
