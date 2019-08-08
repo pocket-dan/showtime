@@ -20,6 +20,7 @@ def train_deep():
     import torch.optim as optim
     from torch.utils.data import Dataset
     from model import FCN
+    from torch.optim import lr_scheduler
 
     def train(model, device, train_loader, optimizer):
         model.train()
@@ -59,9 +60,11 @@ def train_deep():
     # training settings
     batch_size = 32
     test_batch_size = 1000
-    epochs = 400
+    epochs = 1000
     patience = 30  # for early stopping
     use_cuda = torch.cuda.is_available()
+
+    torch.manual_seed(9)
 
     device = torch.device("cuda" if use_cuda else "cpu")
 
@@ -81,10 +84,15 @@ def train_deep():
 
     model = FCN().to(device)
     optimizer = optim.Adam(model.parameters(), lr=0.001, amsgrad=True)
+    # optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
+    # scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.98)
+    # scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=1e-4)
+    # scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=1e-4)
 
     early_stopping = utils.EarlyStopping(patience, Path("results"))
     for epoch in range(1, epochs + 1):
         train_loss = train(model, device, train_loader, optimizer)
+        # scheduler.step()
         test_loss, test_acc = test(model, device, test_loader)
         print(f"epoch: {epoch:>3}, train_loss: {train_loss:.4f}, ", end="")
         print(f"test_loss: {test_loss:.4f}, test_acc: {test_acc:.3f}")
@@ -212,7 +220,7 @@ def train_xgboost():
 
 
 if __name__ == "__main__":
-    # train_deep()
+    train_deep()
     # train_random_forest()
-    train_lightgbm()
+    # train_lightgbm()
     # train_xgboost()

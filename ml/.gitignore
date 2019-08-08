@@ -2,7 +2,8 @@
 classifier/dataset/
 classifier/results/*
 !classifier/results/light-gbm.pickle
-!classifier/results/deep-*
+!classifier/results/deep-model.pth
+!classifier/results/deep-params.pth
 
 # unnecessary dirs
 openpose
