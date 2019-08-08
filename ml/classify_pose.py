@@ -5,6 +5,8 @@ import lightgbm
 import numpy as np
 import torch
 
+from model import FCN
+
 CLASS_NAMES = [
     "hands-on-head",
     "victory",
@@ -26,17 +28,17 @@ PARTS: List[str] = [
     "rwrist",
 ]
 
-# # deep model
-# model = torch.load("classifier/results/deep-model.pth", map_location="cpu")
-# params = torch.load("classifier/results/deep-params.pth", map_location="cpu")
-# model.load_state_dict(params)
-# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# model.to(device)
+# deep model
+model = torch.load("classifier/results/deep-model.pth", map_location="cpu")
+params = torch.load("classifier/results/deep-params.pth", map_location="cpu")
+model.load_state_dict(params)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
-# lightbgm
-f = open("classifier/results/light-gbm.pickle", mode="rb")
-model = pickle.load(f)
-f.close()
+# # lightbgm
+# f = open("classifier/results/light-gbm.pickle", mode="rb")
+# model = pickle.load(f)
+# f.close()
 
 
 def main(body_parts: Dict) -> str:
@@ -49,14 +51,14 @@ def main(body_parts: Dict) -> str:
         _vertices.append(y)
         _vertices.append(x)
 
-    # # deep model
-    # vertices = torch.tensor([_vertices])
-    # vertices = vertices.to(device)
-    # y = model.infer(vertices)
+    # deep model
+    vertices = torch.tensor([_vertices])
+    vertices = vertices.to(device)
+    y = model.infer(vertices)
 
-    # lightbgm
-    vertices = np.asarray([_vertices])
-    probs = model.predict(vertices)
-    y = probs[0].argmax()
+    # # lightbgm
+    # vertices = np.asarray([_vertices])
+    # probs = model.predict(vertices)
+    # y = probs[0].argmax()
 
     return CLASS_NAMES[y]

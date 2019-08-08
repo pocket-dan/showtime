@@ -53,6 +53,7 @@ ADD server.py .
 RUN pip install -r requirements.txt
 RUN conda install -y -c conda-forge lightgbm
 
+ENV PYTHONPATH "$PYTHONPATH:$PROJECT_ROOT/classifier"
 ADD classifier classifier
 RUN pip install -r classifier/requirements.txt
 
