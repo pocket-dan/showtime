@@ -12,7 +12,7 @@ class FCN(nn.Module):
 
         n_vertex = 7
         n_hidden = 128
-        n_classes = 8
+        n_classes = 7
 
         self.fc1 = nn.Linear(n_vertex * 2, n_hidden)
         self.fc2 = nn.Linear(n_hidden, n_hidden)

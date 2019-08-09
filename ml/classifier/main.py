@@ -13,6 +13,43 @@ train_data_dirs = ["t", "o", "k", "n1", "n2"]
 test_data_dirs = ["m", "m1", "m2"]
 
 
+def check_acc():
+    import torch
+    import torch.nn.functional as F
+
+    # deep model
+    with open("results/deep-model.pickle", "rb") as f:
+        model = pickle.load(f)
+    params = torch.load("results/deep-params.pth", map_location="cpu")
+    model.load_state_dict(params)
+
+    batchsize = 1000
+    test_loader = torch.utils.data.DataLoader(
+        PoseDataset([root_dir / d for d in test_data_dirs], mode="test"),
+        batch_size=batchsize,
+        shuffle=False,
+    )
+
+    model.eval()
+    test_loss = 0
+    correct = 0
+    with torch.no_grad():
+        for data, target in test_loader:
+            output = model(data)
+            test_loss += F.nll_loss(
+                output, target, reduction="sum"
+            ).item()  # sum up batch loss
+            pred = output.argmax(
+                dim=1, keepdim=True
+            )  # get the index of the max log-probability
+            correct += pred.eq(target.view_as(pred)).sum().item()
+
+    test_loss /= len(test_loader.dataset)
+    test_acc = 100.0 * correct / len(test_loader.dataset)
+
+    print(test_acc)
+
+
 def train_deep():
     import torch
     import torch.nn as nn
@@ -60,7 +97,7 @@ def train_deep():
     # training settings
     batch_size = 32
     test_batch_size = 1000
-    epochs = 1000
+    epochs = 500
     patience = 30  # for early stopping
     use_cuda = torch.cuda.is_available()
 
@@ -76,23 +113,18 @@ def train_deep():
         **kwargs,
     )
     test_loader = torch.utils.data.DataLoader(
-        PoseDataset([root_dir / d for d in test_data_dirs]),
+        PoseDataset([root_dir / d for d in test_data_dirs], mode="test"),
         batch_size=test_batch_size,
         shuffle=True,
         **kwargs,
     )
 
     model = FCN().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=0.001, amsgrad=True)
-    # optimizer = optim.SGD(model.parameters(), lr=1e-3, momentum=0.9)
-    # scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=0.98)
-    # scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=1e-4)
-    # scheduler = lr_scheduler.CosineAnnealingLR(optimizer, T_max=50, eta_min=1e-4)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3, amsgrad=True)
 
     early_stopping = utils.EarlyStopping(patience, Path("results"))
     for epoch in range(1, epochs + 1):
         train_loss = train(model, device, train_loader, optimizer)
-        # scheduler.step()
         test_loss, test_acc = test(model, device, test_loader)
         print(f"epoch: {epoch:>3}, train_loss: {train_loss:.4f}, ", end="")
         print(f"test_loss: {test_loss:.4f}, test_acc: {test_acc:.3f}")
@@ -100,7 +132,7 @@ def train_deep():
         early_stopping(test_loss, test_acc, model)
 
         if early_stopping.early_stop:
-            print("Early stopping")
+            print("Early stopping activated")
             break
 
     print(f"deep model acc: {early_stopping.best_acc}")
@@ -220,7 +252,8 @@ def train_xgboost():
 
 
 if __name__ == "__main__":
-    train_deep()
+    # train_deep()
+    check_acc()
     # train_random_forest()
     # train_lightgbm()
     # train_xgboost()

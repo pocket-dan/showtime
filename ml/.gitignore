@@ -2,7 +2,7 @@
 classifier/dataset/
 classifier/results/*
 !classifier/results/light-gbm.pickle
-!classifier/results/deep-model.pth
+!classifier/results/deep-model.pickle
 !classifier/results/deep-params.pth
 
 # unnecessary dirs

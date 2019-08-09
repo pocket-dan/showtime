@@ -1,3 +1,4 @@
+import pickle
 from pathlib import Path
 from typing import List
 
@@ -37,7 +38,8 @@ class EarlyStopping:
             self.counter = 0
 
     def save_checkpoint(self, val_loss, val_acc, model):
-        torch.save(model, self.model_save_path / "deep-model.pth")
+        with open(self.model_save_path / "deep-model.pickle", "wb") as f:
+            pickle.dump(model, f)
         torch.save(model.state_dict(), self.model_save_path / "deep-params.pth")
         self.best_loss = val_loss
         self.best_acc = val_acc
