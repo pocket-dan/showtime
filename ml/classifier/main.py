@@ -120,7 +120,7 @@ def train_deep():
     )
 
     model = FCN().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-3, amsgrad=True)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3, amsgrad=False)
 
     early_stopping = utils.EarlyStopping(patience, Path("results"))
     for epoch in range(1, epochs + 1):
@@ -252,7 +252,7 @@ def train_xgboost():
 
 
 if __name__ == "__main__":
-    # train_deep()
+    train_deep()
     check_acc()
     # train_random_forest()
     # train_lightgbm()

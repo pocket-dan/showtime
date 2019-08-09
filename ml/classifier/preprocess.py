@@ -15,6 +15,8 @@ RAW_DIR = Path("dataset/raw")
 PROCESSED_DIR = Path("dataset/processed")
 DATASETS = ["k", "m", "n2", "o", "t", "others"]
 
+score_threshold = 0.25
+
 
 def extract_frames():
     """
@@ -116,8 +118,6 @@ def draw_pose_annotation():
     ]
     images = sorted(images, key=lambda x: str(x))
 
-    score_threshold = 0.25
-
     connections = [
         ["neck", "lshoulder"],
         ["neck", "rshoulder"],
@@ -192,7 +192,10 @@ def remove_missing_data():
         f.close()
 
         for part in parts:
-            if not part in anno["parts"]:
+            if (
+                part not in anno["parts"]
+                or anno["parts"][part]["score"] <= score_threshold
+            ):
                 os.remove(img_path)
                 os.remove(anno_path)
                 break
@@ -203,8 +206,8 @@ if __name__ == "__main__":
     # extract_frames()
     # print("annotate pose...")
     # annotate_pose()
-    # print("draw pose annotation...")
-    # draw_pose_annotation()
+    print("draw pose annotation...")
+    draw_pose_annotation()
     print("remove missing data...")
     remove_missing_data()
     print("count samples...")

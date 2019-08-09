@@ -41,10 +41,13 @@ model.eval()
 # f.close()
 
 
+score_threshold = 0.25
+
+
 def main(body_parts: Dict) -> str:
     _vertices: List[List[float]] = []
     for part in PARTS:
-        if part not in body_parts:
+        if part not in body_parts or body_parts[part]["score"] < score_threshold:
             return f"missing_body_part({part})"
         y = body_parts[part]["y"]
         x = body_parts[part]["x"]
