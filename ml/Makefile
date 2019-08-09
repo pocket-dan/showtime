@@ -16,6 +16,11 @@ stop:
 logs:
 	docker logs -f showtime
 
+restart:
+	make stop
+	make start-dev
+	make logs
+
 start-dev:
 	docker run \
 		-d \

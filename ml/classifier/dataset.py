@@ -17,7 +17,7 @@ class PoseDataset(Dataset):
             "pose4-go-next": 3,
             "pose5-go-back": 4,
             "pose6-ultraman": 5,
-            "pose7-ultraman": 6,
+            "pose7-others": 6,
         }
 
         self.parts: List[str] = [

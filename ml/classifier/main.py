@@ -120,7 +120,7 @@ def train_deep():
     )
 
     model = FCN().to(device)
-    optimizer = optim.Adam(model.parameters(), lr=1e-3, amsgrad=False)
+    optimizer = optim.Adam(model.parameters(), lr=1e-3, amsgrad=True)
 
     early_stopping = utils.EarlyStopping(patience, Path("results"))
     for epoch in range(1, epochs + 1):
