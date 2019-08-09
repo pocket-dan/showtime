@@ -9,7 +9,7 @@ import utils
 from dataset import PoseDataset
 
 root_dir = Path("dataset/processed")
-train_data_dirs = ["t", "o", "k", "n1", "n2"]
+train_data_dirs = ["t", "o", "k", "n1", "n2", "no1", "no2", "no3", "mo1"]
 test_data_dirs = ["m", "m1", "m2"]
 
 

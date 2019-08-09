@@ -16,11 +16,6 @@ stop:
 logs:
 	docker logs -f showtime
 
-restart:
-	make stop
-	make start-dev
-	make logs
-
 start-dev:
 	docker run \
 		-d \
@@ -31,6 +26,12 @@ start-dev:
 		-v "${PWD}/estimate_pose.py:/home/user/showtime/ml/estimate_pose.py" \
 		-v "${PWD}/Makefile:/home/user/showtime/ml/Makefile" \
 		showtime-ml
+	make logs
+
+restart:
+	make stop
+	make start-dev
+	make logs
 
 enter:
 	docker run \

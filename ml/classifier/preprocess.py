@@ -13,7 +13,8 @@ import utils
 
 RAW_DIR = Path("dataset/raw")
 PROCESSED_DIR = Path("dataset/processed")
-DATASETS = ["k", "m", "n2", "o", "t", "others"]
+# DATASETS = ["k", "m", "n2", "o", "t", "others"]
+DATASETS = ["no1", "no2", "no3", "mo1"]
 
 score_threshold = 0.25
 
@@ -206,9 +207,9 @@ if __name__ == "__main__":
     # extract_frames()
     # print("annotate pose...")
     # annotate_pose()
-    print("draw pose annotation...")
-    draw_pose_annotation()
-    print("remove missing data...")
-    remove_missing_data()
-    print("count samples...")
-    count_samples()
+    # print("draw pose annotation...")
+    # draw_pose_annotation()
+    # print("remove missing data...")
+    # remove_missing_data()
+    # print("count samples...")
+    # count_samples()

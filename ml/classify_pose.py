@@ -58,7 +58,6 @@ def main(body_parts: Dict) -> str:
     vertices = torch.tensor([_vertices])
     vertices = vertices.to(device)
     y = model.infer(vertices)
-    print(y.shape)
 
     # # lightgbm
     # vertices = np.asarray([_vertices])
