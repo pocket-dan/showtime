@@ -27,7 +27,7 @@ PARTS: List[str] = [
 ]
 
 # deep model
-with open("results/deep-model.pickle", "rb") as f:
+with open("classifier/results/deep-model.pickle", "rb") as f:
     model = pickle.load(f)
 params = torch.load("classifier/results/deep-params.pth", map_location="cpu")
 model.load_state_dict(params)
