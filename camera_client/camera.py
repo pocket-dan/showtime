@@ -27,7 +27,7 @@ relationPose = {
 }
 
 action_interval = 1  # sec
-recognition_count = 1
+recognition_count = 2
 
 
 def draw_body_parts(image, parts):
@@ -118,7 +118,7 @@ def operate_powerpoint(action):
             tell application "Microsoft PowerPoint"
                 activate
                 tell application "System Events"
-                    keystroke (ASCII character 29)
+                    keystroke (ASCII character 28)
                 end tell
             end tell
             """
@@ -129,7 +129,7 @@ def operate_powerpoint(action):
             tell application "Microsoft PowerPoint"
                 activate
                 tell application "System Events"
-                    keystroke (ASCII character 28)
+                    keystroke (ASCII character 29)
                 end tell
             end tell
             """
@@ -235,7 +235,7 @@ def main():
             count = 0
             pose_prev = pose
 
-        if count >= recognition_count:
+        if count >= recognition_count or pose == "hands-on-head":
             count = 0
             stop_execution, stop_execution_start = True, time.time()
 

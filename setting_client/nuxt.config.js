@@ -56,7 +56,7 @@ export default {
 
   proxy: {
     '/post_data': {
-      target: 'http://localhost:5000'
+      target: 'http://localhost:5001'
     }
   },
   /*

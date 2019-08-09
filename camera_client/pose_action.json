@@ -18,7 +18,7 @@
       "actionType": "sound",
       "id": 5,
       "image": "/_nuxt/assets/images/actions/gaan.png",
-      "name": "shock",
+      "name": "gaan",
       "poseId": 1
     },
     {
@@ -30,9 +30,9 @@
     },
     {
       "actionType": "sound",
-      "id": 4,
-      "image": "/_nuxt/assets/images/actions/patipati.png",
-      "name": "patipati",
+      "id": 14,
+      "image": "/_nuxt/assets/images/actions/sakiwoisogu.png",
+      "name": "sakiwoisogu",
       "poseId": 3
     },
     {
@@ -41,6 +41,13 @@
       "image": "/_nuxt/assets/images/actions/shakin.png",
       "name": "shakin",
       "poseId": 6
+    },
+    {
+      "actionType": "sound",
+      "id": 4,
+      "image": "/_nuxt/assets/images/actions/patipati.png",
+      "name": "patipati",
+      "poseId": 7
     },
     {
       "actionType": "sound",
@@ -61,6 +68,41 @@
       "id": 8,
       "image": "/_nuxt/assets/images/actions/gua.png",
       "name": "gua",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 10,
+      "image": "/_nuxt/assets/images/actions/trumpet.png",
+      "name": "trumpet",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 11,
+      "image": "/_nuxt/assets/images/actions/tekagenn.png",
+      "name": "tekagenn",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 12,
+      "image": "/_nuxt/assets/images/actions/scream-woman.png",
+      "name": "scream-woman",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 13,
+      "image": "/_nuxt/assets/images/actions/ougi.png",
+      "name": "ougi",
+      "poseId": 7
+    },
+    {
+      "actionType": "sound",
+      "id": 15,
+      "image": "/_nuxt/assets/images/actions/matte.png",
+      "name": "matte",
       "poseId": 7
     }
   ]

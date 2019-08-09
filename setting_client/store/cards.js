@@ -8,7 +8,13 @@ export const state = () => ({
     { id: 6, name: 'yaru', actionType: "sound", image: require('~/assets/images/actions/yaru.png'), poseId: 7},
     { id: 7, name: 'www', actionType: "sound", image: require('~/assets/images/actions/www.png'), poseId: 7},
     { id: 8, name: 'gua', actionType: "sound", image: require('~/assets/images/actions/gua.png'), poseId: 7},
-    { id: 9, name: 'hakin', actionType: "sound", image: require('~/assets/images/actions/shakin.png'), poseId: 7},
+    { id: 9, name: 'shakin', actionType: "sound", image: require('~/assets/images/actions/shakin.png'), poseId: 7},
+    { id: 10, name: 'trumpet', actionType: "sound", image: require('~/assets/images/actions/trumpet.png'), poseId: 7},
+    { id: 11, name: 'tekagenn', actionType: "sound", image: require('~/assets/images/actions/tekagenn.png'), poseId: 7},
+    { id: 12, name: 'scream-woman', actionType: "sound", image: require('~/assets/images/actions/scream-woman.png'), poseId: 7},
+    { id: 13, name: 'ougi', actionType: "sound", image: require('~/assets/images/actions/ougi.png'), poseId: 7},
+    { id: 14, name: 'sakiwoisogu', actionType: "sound", image: require('~/assets/images/actions/sakiwoisogu.png'), poseId: 7},
+    { id: 15, name: 'matte', actionType: "sound", image: require('~/assets/images/actions/matte.png'), poseId: 7},
   ]
 })
 
