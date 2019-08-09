@@ -9,7 +9,7 @@ from torchvision import datasets, transforms
 
 
 class PoseDataset(Dataset):
-    def __init__(self, video_dirs: List[Path]):
+    def __init__(self, video_dirs: List[Path], mode="train"):
         self.classes: Dict[str, int] = {
             "pose1-hands-on-head": 0,
             "pose2-victory": 1,
@@ -29,6 +29,7 @@ class PoseDataset(Dataset):
             "relbow",
             "rwrist",
         ]
+        self.mode = mode
 
         items: List[Dict] = []
         for d in video_dirs:
@@ -73,16 +74,17 @@ class PoseDataset(Dataset):
             _vertices.append([y, x])
         vertices = np.asarray(_vertices, dtype=np.float32)
 
-        # change parts offset randomly to make the model robust against the human position
-        ymin, xmin = vertices.min(axis=0)
-        ymax, xmax = vertices.max(axis=0)
-        _yrange, _xrange = 1 - (ymax - ymin), 1 - (xmax - xmin)
+        if self.mode == "train":
+            # change parts offset randomly to make the model robust against the human position
+            ymin, xmin = vertices.min(axis=0)
+            ymax, xmax = vertices.max(axis=0)
+            _yrange, _xrange = 1 - (ymax - ymin), 1 - (xmax - xmin)
 
-        ry, rx = np.random.rand(), np.random.rand()
-        vertices -= np.array([ymin, xmin])
-        vertices += np.array([ry * _yrange, rx * _xrange])
-        assert np.all(vertices >= 0)
-        assert np.all(vertices <= 1)
+            ry, rx = np.random.rand(), np.random.rand()
+            vertices -= np.array([ymin, xmin])
+            vertices += np.array([ry * _yrange, rx * _xrange])
+            assert np.all(vertices >= 0)
+            assert np.all(vertices <= 1)
 
         # class number
         class_number = item["class_number"]
