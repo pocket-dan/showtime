@@ -2,27 +2,28 @@
 
 
 
-〜 あなたのLTやプレゼンを面白くする 〜
+〜 あなたのプレゼンをもっと面白くする 〜
 
 
 
 ShowTimeは発表者のポーズに応じてスライドを進めたり，効果音を鳴らしてくれるツールです．カメラに写った人の骨格をOpenPose(on CPU)で高速に認識してアクションを実行します．各ポーズに紐づくアクションパターンは設定画面でお好みに設定することができます．
+
+[Hack U 2019 TOKYO Student Hackathon](https://hacku.yahoo.co.jp/hacku2019tokyo/) にて最優秀賞を受賞しました．
 
 
 
 ### Demo:
 
 
-<a href=""><img src="https://user-images.githubusercontent.com/13511520/62817977-dbd3b600-bb7a-11e9-9c79-aa5dd1110bdc.png"></a>
+<a href="https://vimeo.com/353065781"><img src="https://user-images.githubusercontent.com/13511520/62817977-dbd3b600-bb7a-11e9-9c79-aa5dd1110bdc.png"></a>
 
 
 
 ### Slide:
 
-これは [Hack U 2019 TOKYO Student Hackathon](https://hacku.yahoo.co.jp/hacku2019tokyo/) で発表した作品です．
 
 
-<a href="https://vimeo.com/353065781"><img src="https://user-images.githubusercontent.com/13511520/62817953-41737280-bb7a-11e9-9fee-d6d4424ac101.png"></a>
+<a href="https://speakerdeck.com/taigamikami/showtime-hack-u"><img src="https://user-images.githubusercontent.com/13511520/62817953-41737280-bb7a-11e9-9fee-d6d4424ac101.png"></a>
 
 
 
@@ -46,5 +47,5 @@ ShowTimeは発表者のポーズに応じてスライドを進めたり，効果
 
 ###  Creators:
 
-- [Taiga Miakmi](https://taigamikami.netlify.com/): `frontend`, `presentation`
-- [Yuki Nakahira](https://raahii.github.io/about/): `machine learning`, `server side`
+- [Taiga Mikami](https://taigamikami.netlify.com/): `frontend`, `presentation`
+- [Yuki Nakahira](https://raahii.github.io/about/): `backend`, `machine learning`
