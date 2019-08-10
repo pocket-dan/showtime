@@ -10,7 +10,7 @@ HEIGHT: int = 368
 
 # ["cmu", "mobilenet_thin", "mobilenet_v2_large", "mobilenet_v2_small"],
 
-MODEL: str = "mobilenet_thin"
+MODEL: str = "cmu"
 RESIZE_OUT_RATIO: float = 4.0
 
 estimator = TfPoseEstimator(get_graph_path(MODEL), target_size=(WIDTH, HEIGHT))

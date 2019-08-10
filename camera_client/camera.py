@@ -26,7 +26,7 @@ relationPose = {
     "ultraman": 6,
 }
 
-action_interval = 1  # sec
+action_interval = 0.8  # sec
 recognition_count = 2
 
 
@@ -235,7 +235,7 @@ def main():
             count = 0
             pose_prev = pose
 
-        if count >= recognition_count or pose == "hands-on-head":
+        if pose == "hands-on-head" or count >= recognition_count:
             count = 0
             stop_execution, stop_execution_start = True, time.time()
 

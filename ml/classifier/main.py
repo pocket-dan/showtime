@@ -252,8 +252,8 @@ def train_xgboost():
 
 
 if __name__ == "__main__":
-    train_deep()
-    check_acc()
-    # train_random_forest()
-    # train_lightgbm()
-    # train_xgboost()
+    # train_deep()
+    # check_acc()
+    train_random_forest()
+    train_lightgbm()
+    train_xgboost()

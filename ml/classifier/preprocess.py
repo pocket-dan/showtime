@@ -13,8 +13,8 @@ import utils
 
 RAW_DIR = Path("dataset/raw")
 PROCESSED_DIR = Path("dataset/processed")
-# DATASETS = ["k", "m", "n2", "o", "t", "others"]
-DATASETS = ["no1", "no2", "no3", "mo1"]
+DATASETS = ["t", "o", "k", "n1", "n2", "no1", "no2", "no3", "mo1"]
+DATASETS += ["m", "m1", "m2"]
 
 score_threshold = 0.25
 
@@ -75,7 +75,7 @@ def annotate_pose():
         result = json.loads(resbody)
         print(f"{endpoint}: '{result}'")
 
-    # get pose annotation using ml server
+    # get pose aSnnotation using ml server
     url = urllib.parse.urljoin(endpoint, "infer")
 
     videos = [v for d in DATASETS for v in utils.subdirs(PROCESSED_DIR / d)]
@@ -205,11 +205,11 @@ def remove_missing_data():
 if __name__ == "__main__":
     # print("extract frames...")
     # extract_frames()
-    # print("annotate pose...")
-    # annotate_pose()
-    # print("draw pose annotation...")
-    # draw_pose_annotation()
-    # print("remove missing data...")
-    # remove_missing_data()
-    # print("count samples...")
-    # count_samples()
+    print("annotate pose...")
+    annotate_pose()
+    print("draw pose annotation...")
+    draw_pose_annotation()
+    print("remove missing data...")
+    remove_missing_data()
+    print("count samples...")
+    count_samples()
